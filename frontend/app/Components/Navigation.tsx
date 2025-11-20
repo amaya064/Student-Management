@@ -144,7 +144,7 @@ export default function Navigation() {
                   <span>Sign Up</span>
                 </Link>
                 <Link
-                  href="/login"
+                  href="/Admin"
                   className="flex items-center space-x-2 text-sm font-medium px-3 py-2 rounded-lg border border-white/30 hover:bg-white/10 transition duration-200"
                 >
                   <FaUserCircle className="text-sm" />
