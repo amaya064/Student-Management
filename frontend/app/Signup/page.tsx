@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaUserGraduate, FaUser, FaPhoneAlt, FaMapMarkedAlt, FaLock } from 'react-icons/fa';
+import Navigation from "../Components/Navigation";
 
 // Define types for form data
 interface FormData {
@@ -70,6 +71,8 @@ export default function Signup() {
   };
 
   return (
+    <div>
+      <Navigation />
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
       <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white shadow-2xl rounded-2xl overflow-hidden">
         {/* Left Section - Form */}
@@ -218,6 +221,7 @@ export default function Signup() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
