@@ -8,7 +8,6 @@ export default function HomePage() {
     <div>
       <Navigation />
       <Home />
-      <Admin_Login />
     </div>
   );
 }

@@ -25,7 +25,7 @@ export default function Navigation() {
 
   const handleProfile = () => {
     if (email) {
-      router.push(`/profile/${email}`);
+      router.push("/profile");
     }
   };
 
