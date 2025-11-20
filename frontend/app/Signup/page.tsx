@@ -55,11 +55,11 @@ export default function Signup() {
       }
 
       setError(null);
-      router.push("/signin");
+      router.push("/Signin");
     } catch (error: unknown) {
       console.error("Error:", error);
       setLoading(false);
-      
+
       // Handle different error types safely
       if (error instanceof Error) {
         setError(error.message || "An unexpected error occurred. Please try again.");
@@ -187,21 +187,21 @@ export default function Signup() {
                 </div>
                 <span className="text-blue-50 text-sm">Track academic progress</span>
               </div>
-              
+
               <div className="flex items-center bg-white/10 rounded-lg px-3 py-2 backdrop-blur-sm">
                 <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center mr-3">
                   <span className="text-white font-bold text-xs">✓</span>
                 </div>
                 <span className="text-blue-50 text-sm">Access course materials</span>
               </div>
-              
+
               <div className="flex items-center bg-white/10 rounded-lg px-3 py-2 backdrop-blur-sm">
                 <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center mr-3">
                   <span className="text-white font-bold text-xs">✓</span>
                 </div>
                 <span className="text-blue-50 text-sm">Manage personal profile</span>
               </div>
-              
+
               <div className="flex items-center bg-white/10 rounded-lg px-3 py-2 backdrop-blur-sm">
                 <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center mr-3">
                   <span className="text-white font-bold text-xs">✓</span>

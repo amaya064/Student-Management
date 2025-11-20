@@ -9,5 +9,6 @@ router.post("/signin", signin);
 router.get('/profile/:email', getEmployeeDetailsByEmail); 
 router.put('/profile/:email', updateUserProfile);
 router.get("/count", getUserCount);
+router.put('/profile/:email', updateUserProfile);
 
 export default router;
