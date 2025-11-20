@@ -78,7 +78,7 @@ export default function Navigation() {
                     <span>Students</span>
                   </Link>
                   <Link 
-                    href="/courses" 
+                    href="/course_studen_view" 
                     className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition duration-200 text-sm font-medium"
                     onClick={() => setMenuOpen(false)}
                   >
