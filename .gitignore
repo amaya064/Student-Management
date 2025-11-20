@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Next.js
+.frontend/.next/
+.next/
+out/
