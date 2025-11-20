@@ -71,7 +71,7 @@ export default function Admin_Home() {
               </li>
               <li
                 className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
-                onClick={() => router.push("/course")}
+                onClick={() => router.push("/course_view")}
               >
                 <FaBook className="text-white text-lg mr-3" />
                 <span className="font-medium">Manage Courses</span>
