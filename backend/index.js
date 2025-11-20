@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
-//import userRouter from "./route/signup.route.js";
+import userRouter from "./route/signup.route.js";
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Routes path
-//app.use("/api/signup", userRouter);
+app.use("/api/signup", userRouter);
 
 // Error handler
 app.use((err, req, res, next) => {
