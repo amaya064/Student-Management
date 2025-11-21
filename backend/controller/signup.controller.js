@@ -226,23 +226,68 @@ export const getEmployeeDetailsByEmail = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   const { email } = req.params;
-  const { phone, address } = req.body;
+  const { 
+    firstName, 
+    lastName, 
+    phone, 
+    address, 
+    studentNumber, 
+    gender, 
+    faculty, 
+    dateOfJoining, 
+    role, 
+    status 
+  } = req.body;
 
   try {
+    const updateData = {
+      phone,
+      address
+    };
+
+    // Only update these fields if they are provided and not "Please update"
+    if (firstName && firstName !== "Please update") updateData.firstName = firstName;
+    if (lastName && lastName !== "Please update") updateData.lastName = lastName;
+    if (studentNumber && studentNumber !== "Please update") updateData.studentNumber = studentNumber;
+    if (gender && gender !== "Please update") updateData.gender = gender;
+    if (faculty && faculty !== "Please update") updateData.faculty = faculty;
+    if (dateOfJoining) updateData.dateOfJoining = new Date(dateOfJoining);
+    if (role) updateData.role = role;
+    if (status) updateData.status = status;
+
     const user = await User.findOneAndUpdate(
       { email },
-      { phone, address },
+      updateData,
       { new: true } // Return updated document
     );
+    
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-    res.status(200).json(user);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: "User profile updated successfully", 
+      data: user 
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error updating user profile.", error });
+    console.error("Update user profile error:", error);
+    
+    // Handle duplicate key error for studentNumber
+    if (error.code === 11000) {
+      return res.status(409).json({ 
+        success: false, 
+        message: "Student number already exists" 
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: "Error updating user profile.", 
+      error: error.message 
+    });
   }
 };
-
 
 
 
