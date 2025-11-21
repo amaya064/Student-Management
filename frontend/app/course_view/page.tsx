@@ -43,7 +43,7 @@ export default function CourseView() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterLevel, setFilterLevel] = useState("all");
     const [filterCategory, setFilterCategory] = useState("all");
-    
+
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
@@ -134,7 +134,7 @@ export default function CourseView() {
     // Handle course update
     const handleUpdateCourse = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!editingCourse) return;
 
         try {
@@ -202,7 +202,7 @@ export default function CourseView() {
 
     // Filter and search courses
     const filteredCourses = courses.filter(course => {
-        const matchesSearch = 
+        const matchesSearch =
             course.courseCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
             course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             course.instructor.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -259,6 +259,20 @@ export default function CourseView() {
                             >
                                 <FaBook className="text-white text-lg mr-3" />
                                 <span className="font-medium">Manage Courses</span>
+                            </li>
+                            <li
+                                className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
+                                onClick={() => router.push("/student_add")}
+                            >
+                                <FaUserGraduate className="text-white text-lg mr-3" />
+                                <span className="font-medium">Add Students</span>
+                            </li>
+                            <li
+                                className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
+                                onClick={() => router.push("/Student_view")}
+                            >
+                                <FaUserGraduate className="text-white text-lg mr-3" />
+                                <span className="font-medium">View Students</span>
                             </li>
                             <li
                                 className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
@@ -419,8 +433,8 @@ export default function CourseView() {
                                 <FaBook className="mx-auto text-gray-400 text-6xl mb-4" />
                                 <h3 className="text-xl font-semibold text-gray-600 mb-2">No courses found</h3>
                                 <p className="text-gray-500 mb-6">
-                                    {searchTerm || filterLevel !== "all" || filterCategory !== "all" 
-                                        ? "Try adjusting your search or filters" 
+                                    {searchTerm || filterLevel !== "all" || filterCategory !== "all"
+                                        ? "Try adjusting your search or filters"
                                         : "Get started by adding your first course"}
                                 </p>
                                 <button
@@ -441,11 +455,10 @@ export default function CourseView() {
                                                     <h3 className="font-bold text-lg">{course.courseCode}</h3>
                                                     <h2 className="font-semibold text-xl mt-1">{course.title}</h2>
                                                 </div>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                    course.level === 'Beginner' ? 'bg-green-500' :
+                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${course.level === 'Beginner' ? 'bg-green-500' :
                                                     course.level === 'Intermediate' ? 'bg-yellow-500' :
-                                                    'bg-red-500'
-                                                }`}>
+                                                        'bg-red-500'
+                                                    }`}>
                                                     {course.level}
                                                 </span>
                                             </div>
@@ -548,7 +561,7 @@ export default function CourseView() {
                                             value={formData.title}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                                         />
                                     </div>
 
@@ -563,7 +576,7 @@ export default function CourseView() {
                                             value={formData.instructor}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -578,7 +591,7 @@ export default function CourseView() {
                                             value={formData.category}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -595,7 +608,7 @@ export default function CourseView() {
                                             required
                                             min="0"
                                             step="0.01"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -611,7 +624,7 @@ export default function CourseView() {
                                             onChange={handleInputChange}
                                             required
                                             placeholder="e.g., 8 weeks, 3 months"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -625,7 +638,7 @@ export default function CourseView() {
                                             value={formData.level}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         >
                                             <option value="">Select Level</option>
                                             <option value="Beginner">Beginner</option>
@@ -646,7 +659,7 @@ export default function CourseView() {
                                         onChange={handleInputChange}
                                         required
                                         rows={4}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                        className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                                     />
                                 </div>
 
