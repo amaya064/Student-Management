@@ -15,7 +15,8 @@ import {
     FaUserGraduate,
     FaChartBar,
     FaPlusCircle,
-    FaEye
+    FaEye,
+    FaTimes
 } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Navigation from "../Components/Navigation";
@@ -42,6 +43,23 @@ export default function CourseView() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterLevel, setFilterLevel] = useState("all");
     const [filterCategory, setFilterCategory] = useState("all");
+    
+    // Modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+    const [updateLoading, setUpdateLoading] = useState(false);
+    const [updateError, setUpdateError] = useState("");
+
+    // Form state
+    const [formData, setFormData] = useState({
+        title: "",
+        instructor: "",
+        category: "",
+        price: "",
+        duration: "",
+        level: "",
+        description: ""
+    });
 
     // Fetch all courses
     useEffect(() => {
@@ -72,6 +90,91 @@ export default function CourseView() {
         }
     };
 
+    // Open modal for editing
+    const handleEditCourse = (course: Course) => {
+        setEditingCourse(course);
+        setFormData({
+            title: course.title,
+            instructor: course.instructor,
+            category: course.category,
+            price: course.price.toString(),
+            duration: course.duration,
+            level: course.level,
+            description: course.description
+        });
+        setIsModalOpen(true);
+        setUpdateError("");
+    };
+
+    // Close modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingCourse(null);
+        setFormData({
+            title: "",
+            instructor: "",
+            category: "",
+            price: "",
+            duration: "",
+            level: "",
+            description: ""
+        });
+        setUpdateError("");
+    };
+
+    // Handle form input changes
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Handle course update
+    const handleUpdateCourse = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!editingCourse) return;
+
+        try {
+            setUpdateLoading(true);
+            setUpdateError("");
+
+            const response = await fetch(`http://localhost:3000/api/courses/${editingCourse._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: formData.title,
+                    instructor: formData.instructor,
+                    category: formData.category,
+                    price: parseFloat(formData.price),
+                    duration: formData.duration,
+                    level: formData.level,
+                    description: formData.description
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert("Course updated successfully!");
+                closeModal();
+                // Refresh the course list
+                fetchCourses();
+            } else {
+                setUpdateError(data.message || "Failed to update course");
+            }
+        } catch (error) {
+            console.error("Error updating course:", error);
+            setUpdateError("Error updating course. Please try again.");
+        } finally {
+            setUpdateLoading(false);
+        }
+    };
+
     const handleDeleteCourse = async (courseId: string, courseTitle: string) => {
         if (!confirm(`Are you sure you want to delete the course "${courseTitle}"?`)) {
             return;
@@ -95,10 +198,6 @@ export default function CourseView() {
             console.error("Error deleting course:", error);
             alert("Error deleting course. Please try again.");
         }
-    };
-
-    const handleEditCourse = (courseId: string) => {
-        router.push(`/course/${courseId}`);
     };
 
     // Filter and search courses
@@ -383,7 +482,7 @@ export default function CourseView() {
                                             {/* Action Buttons */}
                                             <div className="flex justify-between mt-6 pt-4 border-t border-gray-200">
                                                 <button
-                                                    onClick={() => handleEditCourse(course._id)}
+                                                    onClick={() => handleEditCourse(course)}
                                                     className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
                                                 >
                                                     <FaEdit className="mr-2" />
@@ -405,6 +504,184 @@ export default function CourseView() {
                     </div>
                 </main>
             </div>
+
+            {/* Update Course Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-6 text-white rounded-t-xl">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-2xl font-bold">Update Course</h2>
+                                <button
+                                    onClick={closeModal}
+                                    className="text-white hover:text-gray-200 transition-colors"
+                                >
+                                    <FaTimes className="text-xl" />
+                                </button>
+                            </div>
+                            {editingCourse && (
+                                <p className="text-blue-100 mt-2">
+                                    Editing: {editingCourse.courseCode} - {editingCourse.title}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6">
+                            {updateError && (
+                                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                                    {updateError}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleUpdateCourse} className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Title */}
+                                    <div className="md:col-span-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Course Title *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="title"
+                                            value={formData.title}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Instructor */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Instructor *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="instructor"
+                                            value={formData.instructor}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Category */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Category *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="category"
+                                            value={formData.category}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Price */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Price ($) *
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="price"
+                                            value={formData.price}
+                                            onChange={handleInputChange}
+                                            required
+                                            min="0"
+                                            step="0.01"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Duration */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Duration *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="duration"
+                                            value={formData.duration}
+                                            onChange={handleInputChange}
+                                            required
+                                            placeholder="e.g., 8 weeks, 3 months"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Level */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Level *
+                                        </label>
+                                        <select
+                                            name="level"
+                                            value={formData.level}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        >
+                                            <option value="">Select Level</option>
+                                            <option value="Beginner">Beginner</option>
+                                            <option value="Intermediate">Intermediate</option>
+                                            <option value="Advanced">Advanced</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Description *
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleInputChange}
+                                        required
+                                        rows={4}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                    />
+                                </div>
+
+                                {/* Modal Footer */}
+                                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                                    <button
+                                        type="button"
+                                        onClick={closeModal}
+                                        className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={updateLoading}
+                                        className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all disabled:opacity-50"
+                                    >
+                                        {updateLoading ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                Updating...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaEdit className="mr-2" />
+                                                Update Course
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
