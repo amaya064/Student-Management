@@ -61,7 +61,7 @@ export default function Admin_Home() {
           {/* Navigation Menu */}
           <nav className="mt-6">
             <ul className="space-y-2">
-              
+
               <li
                 className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
                 onClick={() => router.push("/course")}
@@ -77,12 +77,19 @@ export default function Admin_Home() {
                 <span className="font-medium">Manage Courses</span>
               </li>
               <li
-                            className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
-                            onClick={() => router.push("/Student_view")}
-                          >
-                            <FaUserGraduate className="text-white text-lg mr-3" />
-                            <span className="font-medium">View Students</span>
-                          </li>
+                className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
+                onClick={() => router.push("/student_add")}
+              >
+                <FaUserGraduate className="text-white text-lg mr-3" />
+                <span className="font-medium">Add Students</span>
+              </li>
+              <li
+                className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
+                onClick={() => router.push("/Student_view")}
+              >
+                <FaUserGraduate className="text-white text-lg mr-3" />
+                <span className="font-medium">View Students</span>
+              </li>
               <li
                 className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
                 onClick={() => router.push("/reports")}
