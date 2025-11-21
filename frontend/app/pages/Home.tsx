@@ -60,22 +60,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quick Actions */}
-        <section className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
-          <div className="flex flex-wrap gap-4">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
-              Add New Student
-            </button>
-            <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-200">
-              View All Students
-            </button>
-            <button className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition duration-200">
-              Generate Reports
-            </button>
-          </div>
-        </section>
-
         {/* Statistics */}
         <section className="mt-12">
           <h3 className="text-xl font-semibold text-gray-800 mb-6 text-center">System Overview</h3>

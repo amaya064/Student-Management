@@ -8,6 +8,8 @@ import Navigation from "../Components/Navigation";
 
 // Define types for form data
 interface FormData {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   phone: string;
@@ -16,6 +18,8 @@ interface FormData {
 
 export default function Signup() {
   const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     phone: '',
@@ -32,7 +36,7 @@ export default function Signup() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -95,11 +99,37 @@ export default function Signup() {
             )}
 
             <div className="space-y-4">
+              {/* First Name Field */}
+              <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
+                <FaUser className="text-gray-400 mr-3 text-lg" />
+                <input
+                  type="text"
+                  name="firstName"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm"
+                  placeholder="First Name"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {/* Last Name Field */}
+              <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
+                <FaUser className="text-gray-400 mr-3 text-lg" />
+                <input
+                  type="text"
+                  name="lastName"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm"
+                  placeholder="Last Name"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
               <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
                 <FaUser className="text-gray-400 mr-3 text-lg" />
                 <input
                   type="email"
-                  id="email"
+                  name="email"
                   className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm"
                   placeholder="Email Address"
                   onChange={handleChange}
@@ -111,7 +141,7 @@ export default function Signup() {
                 <FaLock className="text-gray-400 mr-3 text-lg" />
                 <input
                   type="password"
-                  id="password"
+                  name="password"
                   className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm"
                   placeholder="Password"
                   onChange={handleChange}
@@ -123,7 +153,7 @@ export default function Signup() {
                 <FaPhoneAlt className="text-gray-400 mr-3 text-lg" />
                 <input
                   type="tel"
-                  id="phone"
+                  name="phone"
                   className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm"
                   placeholder="Phone Number"
                   onChange={handleChange}
@@ -135,7 +165,7 @@ export default function Signup() {
                 <FaMapMarkedAlt className="text-gray-400 mr-3 text-lg" />
                 <input
                   type="text"
-                  id="address"
+                  name="address"
                   className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm"
                   placeholder="Address"
                   onChange={handleChange}

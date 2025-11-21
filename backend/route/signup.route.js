@@ -1,6 +1,6 @@
 // signup.route.js
 import express from 'express';
-import { getEmployeeDetailsByEmail, getUserCount, signin, signup, updateUserProfile } from '../controller/signup.controller.js';
+import { getEmployeeDetailsByEmail, getUserCount, registerStudent, signin, signup, updateUserProfile } from '../controller/signup.controller.js';
 
 const router = express.Router();
 
@@ -10,5 +10,6 @@ router.get('/profile/:email', getEmployeeDetailsByEmail);
 router.put('/profile/:email', updateUserProfile);
 router.get("/count", getUserCount);
 router.put('/profile/:email', updateUserProfile);
+router.post("/student", registerStudent);
 
 export default router;

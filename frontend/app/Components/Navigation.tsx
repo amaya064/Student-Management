@@ -70,28 +70,12 @@ export default function Navigation() {
               {email && (
                 <>
                   <Link 
-                    href="/students" 
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition duration-200 text-sm font-medium"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <FaUserGraduate className="text-sm" />
-                    <span>Students</span>
-                  </Link>
-                  <Link 
                     href="/course_studen_view" 
                     className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition duration-200 text-sm font-medium"
                     onClick={() => setMenuOpen(false)}
                   >
                     <FaBook className="text-sm" />
                     <span>Courses</span>
-                  </Link>
-                  <Link 
-                    href="/reports" 
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition duration-200 text-sm font-medium"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <FaChartBar className="text-sm" />
-                    <span>Reports</span>
                   </Link>
                 </>
               )}
@@ -105,7 +89,7 @@ export default function Navigation() {
                 <span>About</span>
               </Link>
               <Link 
-                href="/contact" 
+                href="/contacts" 
                 className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition duration-200 text-sm font-medium"
                 onClick={() => setMenuOpen(false)}
               >
