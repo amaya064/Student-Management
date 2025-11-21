@@ -20,9 +20,9 @@ export default function Admin_Login() {
     e.preventDefault();
     const { name, institutionID, nic } = adminCredentials;
     if (
-      name === "Admin" &&
-      institutionID === "Admin123" &&
-      nic === "200008104348"
+      name === "Amaya" &&
+      institutionID === "Amaya123" &&
+      nic === "123456"
     ) {
       router.push("/Admin_Home");
     } else {

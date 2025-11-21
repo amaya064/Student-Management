@@ -77,6 +77,13 @@ export default function Admin_Home() {
                 <span className="font-medium">Manage Courses</span>
               </li>
               <li
+                            className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
+                            onClick={() => router.push("/Student_view")}
+                          >
+                            <FaUserGraduate className="text-white text-lg mr-3" />
+                            <span className="font-medium">View Students</span>
+                          </li>
+              <li
                 className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
                 onClick={() => router.push("/reports")}
               >
