@@ -299,134 +299,130 @@ export default function User_view() {
             <p className="text-gray-500 mb-6">No students have registered in the system yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {users.map((user) => (
-              <div
-                key={user._id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200"
-              >
-                {/* Header Section */}
-                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                      <FaUserGraduate className="text-white text-xl" />
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
-                        {user.role?.charAt(0).toUpperCase() + user.role?.slice(1) || 'Student'}
-                      </span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                        {user.status || 'Active'}
-                      </span>
-                    </div>
-                  </div>
-                  <h2 className="text-xl font-bold truncate">
-                    {getDisplayValue(user.firstName)} {getDisplayValue(user.lastName)}
-                  </h2>
-                  <p className="text-blue-100 text-sm mt-1 truncate">{user.email}</p>
-                </div>
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Student Information
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Academic Details
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Contact Information
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Account Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {users.map((user) => (
+                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                      {/* Student Information */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                            <FaUserGraduate className="text-blue-600" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {getDisplayValue(user.firstName)} {getDisplayValue(user.lastName)}
+                            </div>
+                            <div className="text-sm text-gray-500">{user.email}</div>
+                            <div className="text-xs text-gray-400 mt-1">
+                              Joined: {new Date(user.createdAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
 
-                {/* Details Section */}
-                <div className="p-6 space-y-4">
-                  {/* Academic Information */}
-                  <div className="space-y-3">
-                    <div className="flex items-center text-sm">
-                      <FaIdCard className="text-gray-400 mr-3 flex-shrink-0" />
-                      <div>
-                        <span className="text-gray-500 font-medium">Student No:</span>
-                        <p className="text-gray-800 font-mono">{getDisplayValue(user.studentNumber)}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center text-sm">
-                      <FaGraduationCap className="text-gray-400 mr-3 flex-shrink-0" />
-                      <div>
-                        <span className="text-gray-500 font-medium">Faculty:</span>
-                        <p className="text-gray-800">{getDisplayValue(user.faculty)}</p>
-                      </div>
-                    </div>
+                      {/* Academic Details */}
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center text-sm">
+                            <FaIdCard className="text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-900 font-medium">{getDisplayValue(user.studentNumber)}</span>
+                          </div>
+                          <div className="flex items-center text-sm">
+                            <FaGraduationCap className="text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-700">{getDisplayValue(user.faculty)}</span>
+                          </div>
+                          <div className="flex items-center text-sm">
+                            <FaVenusMars className="text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-700">{getDisplayValue(user.gender)}</span>
+                          </div>
+                          <div className="flex items-center text-sm">
+                            <FaCalendarAlt className="text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-700">
+                              {user.dateOfJoining 
+                                ? new Date(user.dateOfJoining).toLocaleDateString() 
+                                : 'Please update'
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </td>
 
-                    <div className="flex items-center text-sm">
-                      <FaVenusMars className="text-gray-400 mr-3 flex-shrink-0" />
-                      <div>
-                        <span className="text-gray-500 font-medium">Gender:</span>
-                        <p className="text-gray-800">{getDisplayValue(user.gender)}</p>
-                      </div>
-                    </div>
+                      {/* Contact Information */}
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center text-sm">
+                            <FaPhone className="text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-700">{getDisplayValue(user.phone)}</span>
+                          </div>
+                          <div className="flex items-start text-sm">
+                            <FaMapMarkerAlt className="text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
+                            <span className="text-gray-700 line-clamp-2">{getDisplayValue(user.address)}</span>
+                          </div>
+                        </div>
+                      </td>
 
-                    <div className="flex items-center text-sm">
-                      <FaCalendarAlt className="text-gray-400 mr-3 flex-shrink-0" />
-                      <div>
-                        <span className="text-gray-500 font-medium">Joined:</span>
-                        <p className="text-gray-800">
-                          {user.dateOfJoining 
-                            ? new Date(user.dateOfJoining).toLocaleDateString() 
-                            : 'Please update'
-                          }
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                      {/* Account Status */}
+                      <td className="px-6 py-4">
+                        <div className="space-y-2">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleColor(user.role)}`}>
+                            {user.role?.charAt(0).toUpperCase() + user.role?.slice(1) || 'Student'}
+                          </span>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.status)}`}>
+                            {user.status || 'Active'}
+                          </span>
+                          <div className="flex items-center text-xs text-green-600">
+                            <FaLock className="mr-1" size={10} />
+                            Secured
+                          </div>
+                        </div>
+                      </td>
 
-                  {/* Contact Information */}
-                  <div className="space-y-3 pt-3 border-t border-gray-200">
-                    <div className="flex items-center text-sm">
-                      <FaPhone className="text-gray-400 mr-3 flex-shrink-0" />
-                      <div>
-                        <span className="text-gray-500 font-medium">Phone:</span>
-                        <p className="text-gray-800">{user.phone}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start text-sm">
-                      <FaMapMarkerAlt className="text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="text-gray-500 font-medium">Address:</span>
-                        <p className="text-gray-800">{user.address}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Security Information */}
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="flex items-center space-x-2">
-                      <FaLock className="text-gray-400 text-sm" />
-                      <span className="text-gray-500 font-medium text-sm">Password Status:</span>
-                    </div>
-                    <div className="mt-1 bg-green-50 border border-green-200 rounded-lg p-2">
-                      <p className="text-green-700 text-xs font-medium">
-                        🔒 Securely Encrypted
-                      </p>
-                      <p className="text-green-600 text-xs mt-1">
-                        Password is securely hashed for protection
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-xs text-gray-500">
-                    <span className="font-medium">Registered:</span> {new Date(user.createdAt).toLocaleDateString()}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="px-6 pb-6 flex gap-3">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 flex items-center justify-center space-x-2 font-semibold"
-                  >
-                    <FaEdit className="text-sm" />
-                    <span>Update</span>
-                  </button>
-                  <button
-                    onClick={() => handleRemove(user._id)}
-                    className="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 flex items-center justify-center space-x-2 font-semibold"
-                  >
-                    <FaTrash className="text-sm" />
-                    <span>Remove</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+                      {/* Actions */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEdit(user)}
+                            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 flex items-center space-x-2 font-semibold text-sm"
+                          >
+                            <FaEdit className="text-sm" />
+                            <span>Update</span>
+                          </button>
+                          <button
+                            onClick={() => handleRemove(user._id)}
+                            className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 flex items-center space-x-2 font-semibold text-sm"
+                          >
+                            <FaTrash className="text-sm" />
+                            <span>Remove</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
