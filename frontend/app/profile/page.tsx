@@ -91,7 +91,7 @@ export default function StudentProfile() {
   };
 
   const handleMyGrades = () => {
-    router.push("/mygrades");
+    router.push("/user_mark");
   };
 
   const getDisplayValue = (value: string | undefined) => {
