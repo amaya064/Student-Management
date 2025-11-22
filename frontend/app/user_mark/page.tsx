@@ -9,6 +9,7 @@ import {
   FaStar,
   FaCalendarAlt,
 } from "react-icons/fa";
+import Navigation from "../Components/Navigation";
 
 interface Subject {
   code: string;
@@ -84,6 +85,8 @@ export default function AcademicPerformancePage() {
     : 0;
 
   return (
+     <div>
+          <Navigation />
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-6 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
@@ -232,6 +235,7 @@ export default function AcademicPerformancePage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
