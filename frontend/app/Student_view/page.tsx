@@ -18,10 +18,14 @@ import {
   FaCalendarAlt,
   FaIdCard,
   FaEnvelope,
-  FaUser
+  FaUser,
+  FaDownload
 } from "react-icons/fa";
 import Sidebar from "../Components/Sidebar";
 import Navigation from "../Components/Navigation";
+
+// Import jsPDF
+import jsPDF from "jspdf";
 
 interface User {
   _id: string;
@@ -86,6 +90,120 @@ export default function User_view() {
 
     fetchUsers();
   }, []);
+
+  // Download Profile as PDF
+  const handleDownloadProfile = (user: User) => {
+    // Create new PDF document
+    const doc = new jsPDF();
+
+    // Set document properties
+    doc.setProperties({
+      title: `Student Profile - ${user.firstName} ${user.lastName}`,
+      subject: 'Student Information',
+      author: 'University Management System',
+      keywords: 'student, profile, academic',
+      creator: 'University Management System'
+    });
+
+    // Add university header
+    doc.setFillColor(41, 128, 185);
+    doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('STUDENT MANAGEMENT SYSTEM', 105, 15, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text('STUDENT PROFILE REPORT', 105, 22, { align: 'center' });
+
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+
+    let yPosition = 45;
+
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+
+    // Personal Information Section
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PERSONAL INFORMATION', 20, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Full Name: ${user.firstName || 'N/A'} ${user.lastName || 'N/A'}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Email: ${user.email || 'N/A'}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Gender: ${user.gender || 'Not provided'}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Date Joined: ${user.dateOfJoining ? new Date(user.dateOfJoining).toLocaleDateString() : 'Not provided'}`, 20, yPosition);
+    yPosition += 10;
+
+    // Academic Information Section
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ACADEMIC INFORMATION', 20, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Student Number: ${user.studentNumber || 'Not provided'}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Faculty: ${user.faculty || 'Not provided'}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Role: ${user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Student'}`, 20, yPosition);
+    yPosition += 10;
+
+    // Contact Information Section
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CONTACT INFORMATION', 20, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Phone: ${user.phone || 'Not provided'}`, 20, yPosition);
+    yPosition += 6;
+
+    // Handle address with text wrapping
+    const address = user.address || 'Not provided';
+    const splitAddress = doc.splitTextToSize(`Address: ${address}`, 150);
+    doc.text(splitAddress, 20, yPosition);
+    yPosition += (splitAddress.length * 4) + 6;
+
+    // Account Information Section
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ACCOUNT INFORMATION', 20, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Status: ${user.status || 'Active'}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Member Since: ${new Date(user.createdAt).toLocaleDateString()}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Last Updated: ${new Date(user.updatedAt).toLocaleDateString()}`, 20, yPosition);
+    yPosition += 10;
+
+    // Add a border around the content
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(15, 35, 180, yPosition - 35);
+
+    // Add footer
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Report generated on ${currentDate} at ${currentTime}`, 105, 285, { align: 'center' });
+    doc.text('Student Management System - Develop By Amaya', 105, 290, { align: 'center' });
+
+    // Save the PDF
+    const fileName = `Student_Profile_${user.studentNumber || `${user.firstName}_${user.lastName}`}.pdf`;
+    doc.save(fileName);
+  };
 
   // Remove user handler
   const handleRemove = async (id: string) => {
@@ -356,6 +474,13 @@ export default function User_view() {
                             >
                               <FaEdit className="text-sm" />
                               <span>Update</span>
+                            </button>
+                            <button
+                              onClick={() => handleDownloadProfile(user)}
+                              className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300 flex items-center space-x-2 font-semibold text-sm"
+                            >
+                              <FaDownload className="text-sm" />
+                              <span>Download Profile</span>
                             </button>
                             <button
                               onClick={() => handleRemove(user._id)}

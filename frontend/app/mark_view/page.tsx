@@ -34,6 +34,7 @@ export default function MarksViewPage() {
     const [filterSemester, setFilterSemester] = useState<string>('all');
     const [filterExamType, setFilterExamType] = useState<string>('all');
     const [searchTerm, setSearchTerm] = useState('');
+    const [expandedStudents, setExpandedStudents] = useState<Set<string>>(new Set());
 
     // Fetch all marks from database
     useEffect(() => {
@@ -88,6 +89,16 @@ export default function MarksViewPage() {
         return acc;
     }, {} as Record<string, { student: any; marks: Mark[] }>);
 
+    const toggleStudentExpansion = (studentId: string) => {
+        const newExpanded = new Set(expandedStudents);
+        if (newExpanded.has(studentId)) {
+            newExpanded.delete(studentId);
+        } else {
+            newExpanded.add(studentId);
+        }
+        setExpandedStudents(newExpanded);
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -101,7 +112,7 @@ export default function MarksViewPage() {
             <Navigation />
             <div className="flex min-h-screen bg-gray-100">
                 <Sidebar />
-                <div className="min-h-screen bg-gray-100 py-8">
+                <div className="min-h-screen bg-gray-100 py-8 flex-1">
                     <div className="max-w-7xl mx-auto px-4">
                         {/* Header */}
                         <div className="text-center mb-8">
@@ -208,7 +219,7 @@ export default function MarksViewPage() {
                             </div>
                         </div>
 
-                        {/* Marks Display */}
+                        {/* Compact Table View */}
                         {Object.keys(marksByStudent).length === 0 ? (
                             <div className="bg-white rounded-lg shadow p-8 text-center">
                                 <div className="text-gray-500 text-lg">
@@ -216,122 +227,158 @@ export default function MarksViewPage() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="space-y-6">
-                                {Object.entries(marksByStudent).map(([studentId, { student, marks: studentMarks }]) => (
-                                    <div key={studentId} className="bg-white rounded-lg shadow overflow-hidden">
-                                        {/* Student Header */}
-                                        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <h3 className="text-2xl font-bold">
+                            <div className="bg-white rounded-lg shadow overflow-hidden">
+                                {/* Table Header */}
+                                <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 font-semibold text-gray-700 text-sm">
+                                    <div className="col-span-3">Student Information</div>
+                                    <div className="col-span-2 text-center">Academic Year</div>
+                                    <div className="col-span-2 text-center">Semester</div>
+                                    <div className="col-span-2 text-center">Exam Type</div>
+                                    <div className="col-span-2 text-center">Total Marks</div>
+                                    <div className="col-span-1 text-center">Actions</div>
+                                </div>
+
+                                {/* Student Rows */}
+                                <div className="divide-y divide-gray-200">
+                                    {Object.entries(marksByStudent).map(([studentId, { student, marks: studentMarks }]) => (
+                                        <div key={studentId} className="bg-white">
+                                            {/* Student Summary Row */}
+                                            <div
+                                                className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                                                onClick={() => toggleStudentExpansion(studentId)}
+                                            >
+                                                <div className="col-span-3">
+                                                    <div className="font-medium text-gray-900">
                                                         {student.firstName} {student.lastName}
-                                                    </h3>
-                                                    <p className="text-blue-100">Student Number: {student.studentNumber}</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-lg font-semibold">
-                                                        Total Exam Records: {studentMarks.length}
+                                                    </div>
+                                                    <div className="text-sm text-gray-500">
+                                                        ID: {student.studentNumber}
                                                     </div>
                                                 </div>
+                                                <div className="col-span-2 text-center text-gray-700">
+                                                    Year {Math.min(...studentMarks.map(m => m.academicYear))} - {Math.max(...studentMarks.map(m => m.academicYear))}
+                                                </div>
+                                                <div className="col-span-2 text-center text-gray-700">
+                                                    {[...new Set(studentMarks.map(m => m.semester))].sort().join(', ')}
+                                                </div>
+                                                <div className="col-span-2 text-center">
+                                                    <div className="inline-flex flex-col gap-1">
+                                                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                                                            Mid: {studentMarks.filter(m => m.examType === 'mid').length}
+                                                        </span>
+                                                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
+                                                            Final: {studentMarks.filter(m => m.examType === 'final').length}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="col-span-2 text-center">
+                                                    <div className="text-lg font-semibold text-gray-900">
+                                                        {Math.round(studentMarks.reduce((sum, mark) => sum + mark.totalMarks, 0) / studentMarks.length)}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">Average</div>
+                                                </div>
+                                                <div className="col-span-1 text-center">
+                                                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                                        {expandedStudents.has(studentId) ? 'Hide' : 'View'} Details
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Marks by Academic Year */}
-                                        <div className="p-6">
-                                            {[1, 2, 3, 4].map(year => {
-                                                const yearMarks = studentMarks.filter(m => m.academicYear === year);
-                                                if (yearMarks.length === 0) return null;
-
-                                                return (
-                                                    <div key={year} className="mb-8 last:mb-0">
-                                                        <h4 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b">
-                                                            Year {year} Academic Performance
-                                                        </h4>
-
-                                                        {/* Semesters */}
-                                                        {[1, 2].map(semester => {
-                                                            const semesterMarks = yearMarks.filter(m => m.semester === semester);
-                                                            if (semesterMarks.length === 0) return null;
+                                            {/* Expanded Details */}
+                                            {expandedStudents.has(studentId) && (
+                                                <div className="bg-gray-50 border-t border-gray-200 px-6 py-4">
+                                                    <div className="space-y-4">
+                                                        {/* Group by Year and Semester */}
+                                                        {[1, 2, 3, 4].map(year => {
+                                                            const yearMarks = studentMarks.filter(m => m.academicYear === year);
+                                                            if (yearMarks.length === 0) return null;
 
                                                             return (
-                                                                <div key={semester} className="mb-6 last:mb-0">
-                                                                    <h5 className="text-lg font-medium text-gray-700 mb-3">
-                                                                        Semester {semester}
-                                                                    </h5>
+                                                                <div key={year} className="border border-gray-200 rounded-lg bg-white">
+                                                                    <div className="bg-gray-100 px-4 py-2 border-b border-gray-200">
+                                                                        <h4 className="font-semibold text-gray-800">Year {year}</h4>
+                                                                    </div>
+                                                                    <div className="p-4">
+                                                                        {[1, 2].map(semester => {
+                                                                            const semesterMarks = yearMarks.filter(m => m.semester === semester);
+                                                                            if (semesterMarks.length === 0) return null;
 
-                                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                                        {/* Mid Exam */}
-                                                                        {semesterMarks.filter(m => m.examType === 'mid').map(midExam => (
-                                                                            <div key={midExam._id} className="border border-gray-200 rounded-lg p-4">
-                                                                                <div className="flex justify-between items-center mb-3">
-                                                                                    <h6 className="font-semibold text-gray-800">Mid Examination</h6>
-                                                                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
-                                                                                        Total: {midExam.totalMarks}
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div className="space-y-2">
-                                                                                    {midExam.subjects.map((subject, idx) => (
-                                                                                        <div key={idx} className="flex justify-between items-center text-sm">
-                                                                                            <span className="text-gray-600">
-                                                                                                {subject.code} - {subject.name}
-                                                                                            </span>
-                                                                                            <span className="font-medium text-gray-800">
-                                                                                                {subject.marks}%
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    ))}
-                                                                                </div>
-                                                                            </div>
-                                                                        ))}
+                                                                            return (
+                                                                                <div key={semester} className="mb-4 last:mb-0">
+                                                                                    <h5 className="font-medium text-gray-700 mb-2">Semester {semester}</h5>
+                                                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                                        {/* Mid Exams */}
+                                                                                        {semesterMarks.filter(m => m.examType === 'mid').map(midExam => (
+                                                                                            <div key={midExam._id} className="border border-blue-200 rounded p-3 bg-blue-50">
+                                                                                                <div className="flex justify-between items-center mb-2">
+                                                                                                    <span className="font-semibold text-blue-800 text-sm">Mid Exam</span>
+                                                                                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                                                                                                        Total: {midExam.totalMarks}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                                <div className="space-y-1">
+                                                                                                    {midExam.subjects.map((subject, idx) => (
+                                                                                                        <div key={idx} className="flex justify-between items-center text-xs">
+                                                                                                            <span className="text-gray-600 truncate">
+                                                                                                                {subject.code}: {subject.name}
+                                                                                                            </span>
+                                                                                                            <span className={`font-medium ${subject.marks >= 75 ? 'text-green-600' :
+                                                                                                                    subject.marks >= 50 ? 'text-yellow-600' : 'text-red-600'
+                                                                                                                }`}>
+                                                                                                                {subject.marks}%
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    ))}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        ))}
 
-                                                                        {/* Final Exam */}
-                                                                        {semesterMarks.filter(m => m.examType === 'final').map(finalExam => (
-                                                                            <div key={finalExam._id} className="border border-gray-200 rounded-lg p-4">
-                                                                                <div className="flex justify-between items-center mb-3">
-                                                                                    <h6 className="font-semibold text-gray-800">Final Examination</h6>
-                                                                                    <div className="flex items-center space-x-2">
-                                                                                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
-                                                                                            Total: {finalExam.totalMarks}
-                                                                                        </span>
-                                                                                        {finalExam.caMarks && (
-                                                                                            <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">
-                                                                                                CA: {finalExam.caMarks}%
-                                                                                            </span>
-                                                                                        )}
+                                                                                        {/* Final Exams */}
+                                                                                        {semesterMarks.filter(m => m.examType === 'final').map(finalExam => (
+                                                                                            <div key={finalExam._id} className="border border-green-200 rounded p-3 bg-green-50">
+                                                                                                <div className="flex justify-between items-center mb-2">
+                                                                                                    <span className="font-semibold text-green-800 text-sm">Final Exam</span>
+                                                                                                    <div className="flex gap-1">
+                                                                                                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
+                                                                                                            Total: {finalExam.totalMarks}
+                                                                                                        </span>
+                                                                                                        {finalExam.caMarks && (
+                                                                                                            <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
+                                                                                                                CA: {finalExam.caMarks}%
+                                                                                                            </span>
+                                                                                                        )}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div className="space-y-1">
+                                                                                                    {finalExam.subjects.map((subject, idx) => (
+                                                                                                        <div key={idx} className="flex justify-between items-center text-xs">
+                                                                                                            <span className="text-gray-600 truncate">
+                                                                                                                {subject.code}: {subject.name}
+                                                                                                            </span>
+                                                                                                            <span className={`font-medium ${subject.marks >= 75 ? 'text-green-600' :
+                                                                                                                    subject.marks >= 50 ? 'text-yellow-600' : 'text-red-600'
+                                                                                                                }`}>
+                                                                                                                {subject.marks}%
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    ))}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        ))}
                                                                                     </div>
                                                                                 </div>
-                                                                                <div className="space-y-2">
-                                                                                    {finalExam.subjects.map((subject, idx) => (
-                                                                                        <div key={idx} className="flex justify-between items-center text-sm">
-                                                                                            <span className="text-gray-600">
-                                                                                                {subject.code} - {subject.name}
-                                                                                            </span>
-                                                                                            <span className="font-medium text-gray-800">
-                                                                                                {subject.marks}%
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    ))}
-                                                                                </div>
-                                                                                {finalExam.caMarks && (
-                                                                                    <div className="mt-3 pt-3 border-t border-gray-200">
-                                                                                        <div className="flex justify-between items-center text-sm font-semibold">
-                                                                                            <span>Continuous Assessment (CA):</span>
-                                                                                            <span className="text-purple-600">{finalExam.caMarks}%</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                        ))}
+                                                                            );
+                                                                        })}
                                                                     </div>
                                                                 </div>
                                                             );
                                                         })}
                                                     </div>
-                                                );
-                                            })}
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         )}
 
