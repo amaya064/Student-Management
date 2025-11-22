@@ -6,6 +6,7 @@ import cors from 'cors';
 import userRouter from "./route/signup.route.js";
 import employeeRouter from './route/employee.route.js';
 import courseRoutes from './route/course.route.js';
+import markRoutes from './route/mark.route.js';
 
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.use('/uploads', express.static('uploads'));
 app.use("/api/signup", userRouter);
 app.use('/api/employees', employeeRouter);
 app.use('/api/courses', courseRoutes);
+app.use('/api/marks', markRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {

@@ -68,10 +68,17 @@ export default function Sidebar() {
           </li>
           <li
             className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
-            onClick={() => router.push("/reports")}
+            onClick={() => router.push("/mark_add")}
           >
             <FaChartBar className="text-white text-lg mr-3" />
-            <span className="font-medium">View Reports</span>
+            <span className="font-medium">Add mark</span>
+          </li>
+          <li
+            className="flex items-center p-4 hover:bg-indigo-500 rounded-md cursor-pointer transition-all"
+            onClick={() => router.push("/mark_view")}
+          >
+            <FaChartBar className="text-white text-lg mr-3" />
+            <span className="font-medium">View mark</span>
           </li>
         </ul>
       </nav>
